@@ -1,0 +1,5 @@
+[workspace]
+members = [
+	"dopechain-rust-lib",
+	"dopechain-vm"
+]
