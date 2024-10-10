@@ -4,4 +4,6 @@ version = "0.1.0"
 edition = "2021"
 
 [dependencies]
+rocksdb = "0.22.0"
 wasmtime = {version = "25.0.2", features = ["runtime"]}
+clap = { version = "4.0", features = ["derive"] }
