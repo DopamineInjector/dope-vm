@@ -1,5 +1,6 @@
 [workspace]
-members = [
+members = [ "dopechain-contracts",
 	"dopechain-rust-lib",
-	"dopechain-vm"
+	"dopechain-vm",
+	"dopechain-contracts"
 ]
