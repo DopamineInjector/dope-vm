@@ -1,5 +1,5 @@
 [package]
-name = "dopechain-contracts"
+name = "dopechain_contracts"
 version = "0.1.0"
 edition = "2021"
 
@@ -7,4 +7,7 @@ edition = "2021"
 crate-type = ["cdylib"]
 
 [dependencies]
-dopechain-rust-lib = { path = "../dopechain-rust-lib" }
+dopechain_rust_lib = { path = "../dopechain-rust-lib" }
+dopechain_rust_macros = {path = "../dopechain-rust-macros"}
+serde = { version = "1.0.210", features = ["derive"] }
+serde_json = "1.0.128"

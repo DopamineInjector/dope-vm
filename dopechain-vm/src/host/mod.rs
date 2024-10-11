@@ -11,6 +11,14 @@ mod utils;
 mod node;
 mod mmu;
 
+pub fn env_get_args(
+    args: &str,
+    memory: Memory, 
+    store_context: StoreContextMut<()>,
+) -> i32 {
+    put_string_in_memory(args, memory, store_context)
+}
+
 pub fn storage_write(
     key_ptr: usize, 
     key_len: usize, 

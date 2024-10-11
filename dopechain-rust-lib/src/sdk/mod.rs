@@ -9,6 +9,7 @@ extern "C" {
     fn get_block_number() -> u64;
     fn log_message(message_ptr: i32, message_len: i32);
     fn self_destruct(recipient_ptr: i32, recipient_len: i32);
+    fn env_get_args() -> i32;
 }
 
 pub fn read_storage(key: &str) -> Option<String> {
@@ -85,4 +86,15 @@ pub fn destroy_contract(recipient: &str) {
     unsafe {
         self_destruct(ptr, len);
     }
+}
+
+pub fn get_user_args() -> String {
+    let mut val = String::new();
+    unsafe {
+        let offset = env_get_args();
+        let res = CStr::from_ptr(offset as *const i8);
+        let stringified = res.to_str().unwrap().to_string();
+        val = stringified;
+    }
+    val
 }
