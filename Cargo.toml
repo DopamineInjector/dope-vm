@@ -3,4 +3,4 @@ members = [ "dopechain-contracts",
 	"dopechain-rust-lib",
 	"dopechain-vm",
 	"dopechain-contracts"
-]
+, "dopechain-rust-macros"]
