@@ -10,6 +10,7 @@ extern "C" {
     fn log_message(message_ptr: i32, message_len: i32);
     fn self_destruct(recipient_ptr: i32, recipient_len: i32);
     fn env_get_args() -> i32;
+    fn env_return_value(ptr: i32, len: i32);
 }
 
 pub fn read_storage(key: &str) -> Option<String> {
@@ -97,4 +98,13 @@ pub fn get_user_args() -> String {
         val = stringified;
     }
     val
+}
+
+pub fn write_return(return_val: &str) {
+    let alloced = CString::new(return_val).unwrap();
+    let len = alloced.count_bytes() as i32;
+    let ptr = alloced.as_ptr() as i32;
+    unsafe {
+        env_return_value(ptr, len);
+    }
 }

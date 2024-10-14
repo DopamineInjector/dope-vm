@@ -10,7 +10,7 @@ struct CustomContractArg {
 }
 
 struct SampleContract {
-    balance: OnChainVar<String>,
+    balance: OnChainVar<u64>,
     other_var: OnChainVar<String>
 }
 
@@ -27,14 +27,17 @@ impl Contract for SampleContract {
 impl SampleContract {
     fn run(&mut self) {
         log("Balance from struct");
-        let bal = self.balance.get().unwrap();
-        log(&bal);
+        match self.balance.get() {
+            Some(bal) => log(&format!("{bal}")),
+            None => log("No balance?")
+        }
     }
 
-    fn contract_test(&mut self, arg: CustomContractArg) {
+    fn contract_test(&mut self, arg: CustomContractArg) -> String {
         let _ = self.other_var.get();
         log("Running other test function");
         transfer_currency(&arg.recipient, arg.amount);
+        return "returned string".to_owned();
     }
 }
 

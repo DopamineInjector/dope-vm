@@ -1,4 +1,4 @@
-use std::path::PathBuf;
+use std::{path::PathBuf, process::exit};
 use clap::Parser;
 use dopechain_vm::run_binary;
 
@@ -30,7 +30,15 @@ fn main() {
         args.sender,
         args.block_number,
         args.args);
-    if let Err(err) = res {
-        println!("Error while running dopechain-vm: {err}");
+    match res {
+        Err(e) => {
+            eprintln!("Error while running dopechain-vm: {e}");
+            exit(1);
+        },
+        Ok(output) => {
+            println!("{output}");
+            exit(0);
+        }
     }
+    
 }

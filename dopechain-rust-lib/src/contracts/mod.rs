@@ -1,4 +1,8 @@
+use std::{fmt::Display, str::FromStr};
+
 use crate::sdk::{read_storage, write_storage};
+
+pub mod nfts1;
 
 pub trait Contract {
     fn new() -> Self;
@@ -30,7 +34,7 @@ where
 
 impl <T> Fetchable<T> for OnChainVar<T>
 where
-    T: Clone+From<String>+Into<String>
+    T: Clone+FromStr+Display
 {
     fn get(&mut self) -> Option<T> {
         if self.fetched == true {
@@ -39,16 +43,19 @@ where
             self.fetched = true;
             match read_storage(&self.key) {
                 None => None,
-                Some(stringified) => Some(T::from(stringified))
+                Some(stringified) => match stringified.parse::<T>() {
+                    Ok(res) => Some(res),
+                    Err(_) => None
+                }
             }
         }
     }
 
     fn set(&mut self, value: T) {
-        let string_value: String = value.clone().into();
+        let vclone = value.clone();
+        let string_value: String = format!("{vclone}");
         write_storage(&self.key, &string_value);
         self.value = Some(value);
     }
 }
-
 
