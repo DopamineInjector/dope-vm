@@ -14,9 +14,19 @@ mod mmu;
 pub fn env_get_args(
     args: &str,
     memory: Memory, 
-    store_context: StoreContextMut<()>,
+    store_context: StoreContextMut<String>,
 ) -> i32 {
     put_string_in_memory(args, memory, store_context)
+}
+
+pub fn env_return_value(
+    ptr: usize, 
+    len: usize, 
+    memory: Memory, 
+    mut store_context: StoreContextMut<String>,
+) {
+    let val = get_string_from_memory(ptr, len, memory, store_context.as_context());
+    *store_context.data_mut() = val;
 }
 
 pub fn storage_write(
@@ -25,7 +35,7 @@ pub fn storage_write(
     value_ptr: usize, 
     value_len: usize, 
     memory: Memory, 
-    store_context: StoreContext<()>,
+    store_context: StoreContext<String>,
     contract_prefix: &str, 
     db_path: &PathBuf
 ) {
@@ -39,7 +49,7 @@ pub fn storage_read(
     key_ptr: usize, 
     key_len: usize, 
     memory: Memory, 
-    store_context: StoreContextMut<()>,
+    store_context: StoreContextMut<String>,
     contract_prefix: &str, 
     db_path: &PathBuf
 ) -> usize {
@@ -61,7 +71,7 @@ pub fn transfer(
     recipient_len: usize, 
     amount: u64,
     memory: Memory, 
-    store_context: StoreContext<()>,
+    store_context: StoreContext<String>,
 ) {
     let recipient = get_string_from_memory(recipient_ptr, recipient_len, memory, store_context);
     node::transfer(&recipient, amount);
@@ -70,7 +80,7 @@ pub fn transfer(
 pub fn get_sender(
     sender: &str,
     memory: Memory, 
-    store_context: StoreContextMut<()>,
+    store_context: StoreContextMut<String>,
 ) -> i32 {
     put_string_in_memory(sender, memory, store_context)
 }
@@ -85,7 +95,7 @@ pub fn log_message(
     message_ptr: usize, 
     message_len: usize, 
     memory: Memory, 
-    store_context: StoreContext<()>,
+    store_context: StoreContext<String>,
 ) {
     let message = get_string_from_memory(message_ptr, message_len, memory, store_context);
     node::log(&message);
@@ -96,8 +106,18 @@ pub fn self_destruct(
     recipient_len: usize, 
     contract_id: &str,
     memory: Memory, 
-    store_context: StoreContext<()>,
+    store_context: StoreContext<String>,
 ) {
     let recipient = get_string_from_memory(recipient_ptr, recipient_len, memory, store_context);
     node::destroy(contract_id, &recipient);
+}
+
+pub fn extract_return(
+    returned: i64,
+    memory: Memory,
+    store_context: StoreContext<String>
+) -> String {
+    let ptr = (returned & 0xFFFF) as i32;
+    let len = ((returned >> 32) & 0xFFFF) as i32;
+    get_string_from_memory(ptr as usize, len as usize, memory, store_context)
 }
