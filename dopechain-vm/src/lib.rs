@@ -1,14 +1,13 @@
 #![feature(once_cell_get_mut)]
 use std::{error::Error, fs, path::PathBuf};
 
-use host::extract_return;
 use linker::create_linker;
 use wasmtime::{AsContext, Engine, Memory, MemoryType, Module, Store};
 
 mod host;
 mod linker;
 
-pub const MEMORY_INITIAL_PAGES: usize = 1000;
+pub const MEMORY_INITIAL_PAGES: usize = 5000;
 
 pub fn run_binary(
     binary_path: PathBuf, 
