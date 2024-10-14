@@ -112,12 +112,3 @@ pub fn self_destruct(
     node::destroy(contract_id, &recipient);
 }
 
-pub fn extract_return(
-    returned: i64,
-    memory: Memory,
-    store_context: StoreContext<String>
-) -> String {
-    let ptr = (returned & 0xFFFF) as i32;
-    let len = ((returned >> 32) & 0xFFFF) as i32;
-    get_string_from_memory(ptr as usize, len as usize, memory, store_context)
-}

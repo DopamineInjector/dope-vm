@@ -8,22 +8,22 @@ pub trait NFTS1<T>
 where
     T: Contract
 {
-    fn balance_of(&mut self, owner: String) -> String;
-    fn owner_of(&mut self, token_id: String) -> String;
+    fn owner_of(&mut self, token_id: u64) -> String;
     fn owned_by(&mut self, owner: String) -> String;
     fn transfer_from(&mut self, args: TransferFromArgs);
     fn mint(&mut self, args: MintArgs);
+    fn get_metadata(&mut self, token_id: u64) -> String;
 }
 
 #[derive(Serialize, Deserialize)]
 pub struct TransferFromArgs {
-    from: String,
-    to: String,
-    token_id: String
+    pub from: String,
+    pub to: String,
+    pub token_id: u64
 }
 
 #[derive(Serialize, Deserialize)]
 pub struct MintArgs {
-    metadata_uri: String,
-    owner: String
+    pub metadata_uri: String,
+    pub owner: String
 }
