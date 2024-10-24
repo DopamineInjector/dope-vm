@@ -11,7 +11,7 @@ struct CliArgs {
     #[arg(long)]
     blockaddr: String,
     #[arg(short, long)]
-    db: PathBuf,
+    db: String,
     #[arg(short, long)]
     sender: String,
     #[arg(long)]

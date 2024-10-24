@@ -4,7 +4,7 @@ use wasmtime::{AsContext, Memory, StoreContext, StoreContextMut };
 
 use crate::host::utils::put_string_in_memory;
 
-use self::{utils::get_string_from_memory};
+use self::utils::get_string_from_memory;
 
 mod storage;
 mod utils;
@@ -37,12 +37,11 @@ pub fn storage_write(
     memory: Memory, 
     store_context: StoreContext<String>,
     contract_prefix: &str, 
-    db_path: &PathBuf
+    db_url: &str
 ) {
     let key = get_string_from_memory(key_ptr, key_len, memory, store_context.as_context());
-    let namespaced_key = format!("{contract_prefix}:{key}");
     let value = get_string_from_memory(value_ptr, value_len, memory, store_context.as_context());
-    storage::insert(db_path, &namespaced_key, &value);
+    storage::insert(db_url, key.to_owned(), value.to_owned(), contract_prefix.to_owned());
 }
 
 pub fn storage_read(
@@ -51,11 +50,10 @@ pub fn storage_read(
     memory: Memory, 
     store_context: StoreContextMut<String>,
     contract_prefix: &str, 
-    db_path: &PathBuf
+    db_url: &str
 ) -> usize {
     let key = get_string_from_memory(key_ptr, key_len, memory, store_context.as_context());
-    let namespaced_key = format!("{contract_prefix}:{key}");
-    let res_offset = match storage::get(db_path, &namespaced_key) {
+    let res_offset = match storage::get(db_url, key.to_owned(), contract_prefix.to_owned()) {
         None => {
             0
         },
@@ -112,3 +110,9 @@ pub fn self_destruct(
     node::destroy(contract_id, &recipient);
 }
 
+pub fn initialize_storage(
+    contract_prefix: &str, 
+    db_url: &str
+) {
+    storage::initialize_storage(db_url, contract_prefix.to_string());
+}

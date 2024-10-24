@@ -13,7 +13,7 @@ pub fn run_binary(
     binary_path: PathBuf, 
     entrypoint: String,
     blockchain_id: String, 
-    db_path: PathBuf,
+    db_path: String,
     sender_id: String,
     block_number: u64,
     function_args: String

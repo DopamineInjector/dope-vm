@@ -2,19 +2,22 @@ use std::{path::PathBuf, sync::Arc};
 
 use wasmtime::{AsContext, AsContextMut, Caller, Engine, Linker, Memory};
 
-use crate::host::{env_get_args, env_return_value, get_block_number, get_sender, log_message, self_destruct, storage_read, storage_write, transfer};
+use crate::host::{env_get_args, env_return_value, get_block_number, get_sender, initialize_storage, log_message, self_destruct, storage_read, storage_write, transfer};
 
 pub fn create_linker(
     contract_prefix: String, 
     sender_id: String, 
     block_number: u64, 
-    db_path: PathBuf, 
+    db_url: String, 
     function_args: String, 
     memory: Memory, 
     engine: &Engine
 ) -> Linker<String> {
     let mut linker = Linker::new(engine);
-    let db_path = Arc::new(db_path);
+    let contract_prefix = format!("data/contracts/{contract_prefix}");
+    // Initialize storage
+    initialize_storage(&contract_prefix, &db_url);
+    let db_path = Arc::new(db_url);
     let contract_prefix = Arc::new(contract_prefix);
     // Get args string
     let _ = linker.func_wrap("env", "env_get_args", move |mut caller: Caller<'_, String>| {
