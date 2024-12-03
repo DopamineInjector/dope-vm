@@ -9,7 +9,7 @@ where
     T: Contract
 {
     fn owner_of(&mut self, token_id: u64) -> String;
-    fn owned_by(&mut self, owner: String) -> String;
+    fn owned_by(&mut self, args: OwnedByArgs) -> String;
     fn transfer_from(&mut self, args: TransferFromArgs);
     fn mint(&mut self, args: MintArgs);
     fn get_metadata(&mut self, token_id: u64) -> String;
@@ -25,5 +25,10 @@ pub struct TransferFromArgs {
 #[derive(Serialize, Deserialize)]
 pub struct MintArgs {
     pub metadata_uri: String,
+    pub owner: String
+}
+
+#[derive(Serialize, Deserialize)]
+pub struct OwnedByArgs {
     pub owner: String
 }

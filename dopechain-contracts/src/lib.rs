@@ -1,7 +1,7 @@
 use core::panic;
 use std::{collections::{HashMap, HashSet}, env::args, fmt::Display, str::FromStr};
 
-use dopechain_rust_lib::{contracts::{nfts1::{MintArgs, TransferFromArgs, NFTS1}, Contract, Fetchable, OnChainVar}, sdk::log};
+use dopechain_rust_lib::{contracts::{nfts1::{MintArgs, OwnedByArgs, TransferFromArgs, NFTS1}, Contract, Fetchable, OnChainVar}, sdk::log};
 use dopechain_rust_macros::contract_api;
 use serde::{Deserialize, Serialize};
 
@@ -143,13 +143,13 @@ impl NFTS1<BigWinToken> for BigWinToken {
         }
     }
 
-    fn owned_by(&mut self, owner: String) -> String {
+    fn owned_by(&mut self, args: OwnedByArgs) -> String {
         let owners = self.owners.get().unwrap_or_else(|| {
             let fresh_info = OwnerInfo::new();
             self.owners.set(fresh_info.clone());
             fresh_info
         });
-        owners.stringify_owners_tokens(&owner)
+        owners.stringify_owners_tokens(&args.owner)
     }
 
     fn mint(&mut self, args: MintArgs) {
